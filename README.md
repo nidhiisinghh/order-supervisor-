@@ -23,6 +23,16 @@ By leveraging state-of-the-art durable orchestration and agentic reasoning, the 
 
 ---
 
+## Screenshots
+
+### Configured Supervisor Templates
+![Configured Templates](docs/images/templates.png)
+
+### Order Supervision Dashboard & Run Details
+![Dashboard](docs/images/dashboard.png)
+
+---
+
 ## Architecture at a Glance
 
 ```
