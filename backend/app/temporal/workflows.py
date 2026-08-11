@@ -28,6 +28,7 @@ class OrderSupervisorWorkflow:
         self._wake_up_guidance = "Wake up on any critical problems."
         self._status = "active"
         self._loop_iteration_count = 0
+        self._is_delivered = False
 
     @workflow.signal
     def signal_event(self, name: str, payload: dict) -> None:
@@ -74,6 +75,7 @@ class OrderSupervisorWorkflow:
         carried_memory_summary: Optional[str] = None,
         carried_wake_up_guidance: Optional[str] = None,
         carried_loop_iteration_count: int = 0,
+        carried_is_delivered: bool = False,
     ) -> dict:
         self.run_id = workflow.info().workflow_id
 
@@ -83,6 +85,7 @@ class OrderSupervisorWorkflow:
             self._memory_summary = carried_memory_summary
             self._wake_up_guidance = carried_wake_up_guidance
             self._loop_iteration_count = carried_loop_iteration_count
+            self._is_delivered = carried_is_delivered
 
         # Trigger continue_as_new after this many loop iterations.
         # Each iteration = one complete wake-up cycle (signal or timer).
@@ -131,6 +134,7 @@ class OrderSupervisorWorkflow:
                         self._memory_summary,       # carry forward memory
                         self._wake_up_guidance,     # carry forward classifier guidance
                         self._loop_iteration_count, # carry forward count (keeps growing)
+                        self._is_delivered,         # carry forward delivered state
                     ]
                 )
             # ──────────────────────────────────────────────────────────────────
@@ -215,8 +219,10 @@ class OrderSupervisorWorkflow:
                         )
 
                         # Lifecycle terminal state rules
-                        if event_name in ["delivered", "refund_requested"]:
+                        if event_name == "refund_requested":
                             self._terminal_event_received = True
+                        elif event_name == "delivered":
+                            self._is_delivered = True
 
                         classifier_res = await workflow.execute_activity(
                             classify_event_activity,
@@ -249,6 +255,15 @@ class OrderSupervisorWorkflow:
                         self._wake_up_time = workflow.now() + timedelta(seconds=sleep_duration) if sleep_duration > 0 else None
             else:
                 # Woken by scheduled timer
+                if self._is_delivered:
+                    await workflow.execute_activity(
+                        db_log_activity_activity,
+                        args=[self.run_id, "status_change", "return_window_closed", {"message": "Return window closed without refund request. Order finalized."}],
+                        start_to_close_timeout=timedelta(seconds=10)
+                    )
+                    self._terminal_event_received = True
+                    continue
+
                 await workflow.execute_activity(
                     db_log_activity_activity,
                     args=[self.run_id, "status_change", "scheduled_wakeup", {"message": "Scheduled check-in timer expired."}],
