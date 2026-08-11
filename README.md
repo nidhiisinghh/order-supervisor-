@@ -10,6 +10,11 @@ Sagepilot AI pioneers the autonomous AI workforce. This repository contains the 
 
 By leveraging state-of-the-art durable orchestration and agentic reasoning, the supervisor acts as a round-the-clock monitoring representative: handling payment issues, tracking shipping delays, managing custom instructions, and communicating with customers or internal D2C teams.
 
+<img width="1470" height="835" alt="Screenshot 2026-08-11 at 3 33 49 PM" src="https://github.com/user-attachments/assets/3fdc025b-da7c-4e4b-9efc-67d8abf2040c" />
+<img width="1470" height="835" alt="Screenshot 2026-08-11 at 3 34 02 PM" src="https://github.com/user-attachments/assets/bd9229e3-b6f4-42ab-9ce2-1197b1facc94" />
+
+
+
 ---
 
 ## 🌟 Key Capabilities & Highlights
