@@ -1,6 +1,25 @@
-# Order Supervisor AI
+# 🦅 Sagepilot AI — Order Supervisor
 
-A long-running AI supervisor that oversees a single order from creation to completion using Temporal, FastAPI and Next.js.
+[![Temporal](https://img.shields.io/badge/Orchestration-Temporal%20SDK-blue?style=flat-square&logo=temporal&logoColor=white)](https://temporal.io)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-emerald?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2014-black?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![Groq](https://img.shields.io/badge/LLM%20Inference-Groq%20%2F%20Llama%203-orange?style=flat-square&logo=groq&logoColor=white)](https://groq.com)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
+
+Sagepilot AI pioneers the autonomous AI workforce. This repository contains the Proof of Concept (POC) for **Order Supervisor AI** — a long-running, event-driven AI employee designed to oversee a customer's order lifecycle from creation to delivery. 
+
+By leveraging state-of-the-art durable orchestration and agentic reasoning, the supervisor acts as a round-the-clock monitoring representative: handling payment issues, tracking shipping delays, managing custom instructions, and communicating with customers or internal D2C teams.
+
+---
+
+## 🌟 Key Capabilities & Highlights
+
+*   **Durable Long-Running Workflows:** Runs a single, persistent Temporal workflow per order that survives server restarts, database downtime, or network failures.
+*   **Dual-LLM Wake/Sleep Pattern:** Employs a lightweight event router (classifier) to filter routine updates (keeping the agent asleep) and immediately triggers the main reasoning agent on critical events.
+*   **Dynamic Client Customization:** Features custom base instructions, model choices, and configurable aggressiveness templates for diverse e-commerce verticals (e.g., Express Delivery, Cold-Chain Pharma, Fraud Prevention).
+*   **Indian Rupee (₹/INR) Standard:** Natively localized to prioritize Indian Rupees for all pricing, transaction alerts, and reasoning summaries.
+*   **Infinite Loop Protection:** Integrates `continue_as_new` to dynamically compress event histories and prevent unbounded growth over weeks-long order cycles.
+*   **Human-in-the-Loop Override:** Allows dynamically adding run-specific directions mid-execution to immediately alter agent behavior.
 
 ---
 
@@ -20,13 +39,13 @@ A long-running AI supervisor that oversees a single order from creation to compl
 ┌──────────────▼──────────┐   ┌───────────▼───────────────────┐
 │   Temporal Server       │   │     PostgreSQL Database       │
 │   (Docker, port 7233)   │   │   supervisors · runs ·        │
-│                         │   │   activities (timeline)       │
+│   │                         │   │   activities (timeline)       │
 │  OrderSupervisorWorkflow│   └───────────────────────────────┘
 │  ├─ signal_event        │
 │  ├─ signal_instruction  │   ┌───────────────────────────────┐
 │  ├─ signal_pause/resume │   │      Groq LLM API             │
 │  └─ signal_terminate    │   │  llama-3.3-70b-versatile      │
-│                         │◄──│  Main Agent + Classifier      │
+│   │                         │◄──│  Main Agent + Classifier      │
 │  Temporal Worker        │   └───────────────────────────────┘
 │  ├─ Event Classifier    │
 │  └─ Main Agent Runtime  │
