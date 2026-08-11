@@ -19,6 +19,8 @@ export default function TemplatesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [selectedSupervisor, setSelectedSupervisor] = useState<Supervisor | null>(null);
+
   // Form states
   const [name, setName] = useState("");
   const [baseInstruction, setBaseInstruction] = useState("");
@@ -139,7 +141,11 @@ export default function TemplatesPage() {
                 </thead>
                 <tbody className="divide-y divide-zinc-150 dark:divide-zinc-900">
                   {supervisors.map((item) => (
-                    <tr key={item.id} className="hover:bg-zinc-100/30 dark:hover:bg-zinc-900/15 transition-colors">
+                    <tr 
+                      key={item.id} 
+                      onClick={() => setSelectedSupervisor(item)}
+                      className="hover:bg-zinc-100/50 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
+                    >
                       <td className="p-3 font-semibold text-zinc-900 dark:text-zinc-200">
                         <div className="text-sm">{item.name}</div>
                         <div className="text-zinc-500 dark:text-zinc-400 font-normal text-[10px] max-w-md line-clamp-2 mt-1 leading-relaxed">
@@ -266,6 +272,51 @@ export default function TemplatesPage() {
             </button>
           </form>
         </div>
+      {selectedSupervisor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg max-w-lg w-full shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+            <div className="px-5 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 flex items-center justify-between">
+              <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{selectedSupervisor.name}</h3>
+              <button 
+                onClick={() => setSelectedSupervisor(null)}
+                className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 text-lg font-bold font-sans cursor-pointer focus:outline-none"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-5 overflow-y-auto flex flex-col gap-4 text-xs leading-relaxed text-zinc-650 dark:text-zinc-300">
+              <div className="grid grid-cols-3 gap-3 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-md border border-zinc-200 dark:border-zinc-850">
+                <div>
+                  <span className="block text-[9px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Model</span>
+                  <span className="font-mono text-zinc-800 dark:text-zinc-200 font-semibold">{selectedSupervisor.model_choice}</span>
+                </div>
+                <div>
+                  <span className="block text-[9px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Wakefulness</span>
+                  <span className="text-zinc-800 dark:text-zinc-200 font-semibold">{selectedSupervisor.default_wakeup_behavior || "None"}</span>
+                </div>
+                <div>
+                  <span className="block text-[9px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Agility</span>
+                  <span className="text-zinc-800 dark:text-zinc-200 font-semibold">{selectedSupervisor.aggressiveness.toUpperCase()}</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[9px] uppercase font-bold text-zinc-400 dark:text-zinc-500 tracking-wider">Base Instructions (System Prompt)</span>
+                <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-850 rounded-md p-4 font-mono whitespace-pre-wrap break-words text-zinc-800 dark:text-zinc-200 leading-normal max-h-72 overflow-y-auto">
+                  {selectedSupervisor.base_instruction}
+                </div>
+              </div>
+            </div>
+            <div className="px-5 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 flex justify-end">
+              <button 
+                onClick={() => setSelectedSupervisor(null)}
+                className="px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer text-xs"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </main>
     </div>
   );
