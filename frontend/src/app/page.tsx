@@ -570,12 +570,14 @@ export default function Dashboard() {
                         <div className="border-t border-zinc-100 dark:border-zinc-800/80 pt-3 mt-4 flex justify-between items-center text-[10px] text-zinc-400 dark:text-zinc-500">
                           <span className="font-semibold uppercase tracking-wider text-[9px]">Sleep State:</span>
                           <span className="font-mono text-zinc-600 dark:text-zinc-400 font-bold uppercase">
-                            {selectedRun.next_wakeup_time 
-                              ? `Sleeping until: ${parseUTCDate(selectedRun.next_wakeup_time).toLocaleTimeString()}`
-                              : selectedRun.status === "completed" 
+                            {selectedRun.status === "completed" 
                               ? "Resolved - Asleep Indefinitely"
                               : selectedRun.status === "terminated"
                               ? "Terminated - Workflow Inactive"
+                              : selectedRun.status === "paused"
+                              ? "Paused - Timer Suspended"
+                              : selectedRun.next_wakeup_time 
+                              ? `Sleeping until: ${parseUTCDate(selectedRun.next_wakeup_time).toLocaleTimeString()}`
                               : "Sleeping indefinitely"}
                           </span>
                         </div>

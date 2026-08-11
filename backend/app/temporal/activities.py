@@ -50,6 +50,8 @@ async def db_update_run_status_activity(run_id: str, status: str) -> None:
         run = db.query(Run).filter(Run.id == run_id).first()
         if run:
             run.status = status
+            if status in ["completed", "terminated"]:
+                run.next_wakeup_time = None
             db.commit()
     finally:
         db.close()
@@ -187,7 +189,8 @@ async def generate_final_summary_activity(run_id: str) -> dict:
                 "recommendations": "Provide Groq key."
             }
             run.final_summary = summary_output
-            run.status = "completed"
+            if run.status != "terminated":
+                run.status = "completed"
             db.commit()
             return summary_output
 
@@ -233,7 +236,8 @@ Generate the required JSON output now.
         summary_output = json.loads(response.choices[0].message.content)
         
         run.final_summary = summary_output
-        run.status = "completed"
+        if run.status != "terminated":
+            run.status = "completed"
         db.commit()
 
         # Log completion event to activity table
@@ -257,7 +261,8 @@ Generate the required JSON output now.
             "recommendations": "Review error log."
         }
         run.final_summary = fallback
-        run.status = "completed"
+        if run.status != "terminated":
+            run.status = "completed"
         db.commit()
         return fallback
     finally:
