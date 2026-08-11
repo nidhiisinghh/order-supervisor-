@@ -230,7 +230,7 @@ export default function TemplatesPage() {
                 value={defaultWakeup}
                 onChange={(e) => setDefaultWakeup(e.target.value)}
                 placeholder="e.g. Sleep 2 hours, wake on any critical event."
-                className="bg-zinc-50 dark:bg-zinc-955 border border-zinc-250 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-md px-3 py-2 focus:outline-none focus:border-zinc-450 dark:focus:border-zinc-500 shadow-sm"
+                className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-250 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-md px-3 py-2 focus:outline-none focus:border-zinc-450 dark:focus:border-zinc-500 shadow-sm"
               />
             </div>
 
