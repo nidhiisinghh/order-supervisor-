@@ -21,6 +21,15 @@ def classify_event_sync(event_name: str, event_payload: dict, memory_summary: st
     if event_name in critical_events:
         return True, f"Critical event '{event_name}' forces immediate supervisor wake-up."
 
+    # Force immediate sleep (no wake-up) for routine events
+    non_critical_events = {
+        "payment_confirmed",
+        "shipment_created",
+        "no_update_for_n_hours"
+    }
+    if event_name in non_critical_events:
+        return False, f"Routine event '{event_name}' does not warrant supervisor wake-up."
+
     # Standard system check for initialization or completion recommendations
     if event_name in ["order_created"]:
         return True, "Order creation event initialized. Waking up to set starting state."
