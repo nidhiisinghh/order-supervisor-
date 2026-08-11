@@ -1,0 +1,20 @@
+# Secrets
+backend/.env
+
+# Logs
+backend/*.log
+*.log
+
+# Python
+**/__pycache__/
+**/*.pyc
+backend/venv/
+backend/.venv/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# OS files
+.DS_Store

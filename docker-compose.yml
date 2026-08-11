@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sagepilot-postgres
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: sagepilot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  temporal:
+    image: temporalio/auto-setup:1.24.2
+    container_name: sagepilot-temporal
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=postgrespassword
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_SEPARATE_VISIBILITY_DB=false
+      - POSTGRES_SEEDS=db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:
